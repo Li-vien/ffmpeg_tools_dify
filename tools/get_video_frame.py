@@ -98,7 +98,26 @@ class GetVideoFrame(Tool):
                         })
                         return
                     
-                    duration_info = json.loads(duration_result.stdout)
+                    # 验证 ffprobe 输出是否为有效 JSON
+                    if not duration_result.stdout.strip():
+                        error_msg = "ffprobe returned empty output when getting duration"
+                        yield self.create_text_message(error_msg)
+                        yield self.create_json_message({
+                            "status": "error",
+                            "message": error_msg
+                        })
+                        return
+                    
+                    try:
+                        duration_info = json.loads(duration_result.stdout)
+                    except json.JSONDecodeError as json_error:
+                        error_msg = f"Failed to parse duration info as JSON: {str(json_error)}. Output: {duration_result.stdout[:200]}..."
+                        yield self.create_text_message(error_msg)
+                        yield self.create_json_message({
+                            "status": "error",
+                            "message": error_msg
+                        })
+                        return
                     duration = float(duration_info.get("format", {}).get("duration", 0))
                     seek_time = max(0, duration - 1)  # 结束前1秒
                 elif frame_type == 'time':
