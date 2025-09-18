@@ -7,14 +7,20 @@
 ### Description
 A collection of ffmpeg tools that organizes common functionality
 
+### Requirements
+- FFmpeg must be installed on the system
+- Python 3.12+
+- **You must enable video file upload in Dify's Features > File Upload settings.**
 
 ## Features
 ### 1. Get Video Info
+![](./_assets/image.png)
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | video | file | Yes | The video file |
 
 ### 2. Get Video Frame
+![](./_assets/image-frame.png)
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | video | file | Yes | The video file |
@@ -22,7 +28,7 @@ A collection of ffmpeg tools that organizes common functionality
 | time | number | No | Specific time to extract frame, effective when type is time (seconds) |
 
 #### 3. Get Video Frames
-
+![](./_assets/image-list.png)
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | video | file | Yes | The video file |
