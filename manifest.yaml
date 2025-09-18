@@ -8,10 +8,10 @@ label:
   zh_Hans: ffmpeg_tools_dify
   pt_BR: ffmpeg_tools_dify
 description:
-  en_US: FFmpeg tools plugin that provides tools for getting video information, format conversion, keyframe extraction, cutting, compression and audio extraction.
-  ja_JP: FFmpegツールセットプラグイン。動画情報の取得、フォーマット変換、キーフレーム抽出、カット、圧縮、音声抽出のツールを提供します。
-  zh_Hans: FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。
-  pt_BR: Plugin de ferramentas FFmpeg que fornece ferramentas para obter informações de vídeo, conversão de formato, extração de quadros-chave, corte, compressão e extração de áudio.
+  en_US: FFmpeg tools plugin that provides tools for getting video information, keyframe extraction.
+  ja_JP: FFmpegツールセットプラグイン。動画情報の取得、キーフレーム抽出のツールを提供します。
+  zh_Hans: FFmpeg工具集插，提供获取视频信息、关键帧提取的工具。
+  pt_BR: Plugin de ferramentas FFmpeg que fornece ferramentas para obter informações de vídeo, extração de quadros-chave.
 icon: icon.svg
 icon_dark: icon-dark.svg
 resource:
