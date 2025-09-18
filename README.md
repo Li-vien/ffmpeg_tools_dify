@@ -46,7 +46,7 @@ A collection of ffmpeg tools that organizes common functionality
 {
     "video": [uploaded_video_file],
     "type": "time",
-    time: "12"
+    "time": "12"
 }
 ```
 4. Extract frames at 10-second intervals

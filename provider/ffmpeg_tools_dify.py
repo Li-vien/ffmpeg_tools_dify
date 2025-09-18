@@ -1,4 +1,5 @@
 from typing import Any
+import subprocess
 
 from dify_plugin import ToolProvider
 from dify_plugin.errors.tool import ToolProviderCredentialValidationError
@@ -8,9 +9,9 @@ class FfmpegToolsDifyProvider(ToolProvider):
     
     def _validate_credentials(self, credentials: dict[str, Any]) -> None:
         try:
-            """
-            IMPLEMENT YOUR VALIDATION HERE
-            """
+            result = subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, capture_output=True, text=True)
+            if result.returncode != 0:
+                raise ToolProviderCredentialValidationError("FFmpeg is not installed")
         except Exception as e:
             raise ToolProviderCredentialValidationError(str(e))
 

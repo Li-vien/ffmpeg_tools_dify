@@ -1,0 +1,30 @@
+identity:
+  name: "get_video_info"
+  author: "livien"
+  label:
+    en_US: "get_video_info"
+    zh_Hans: "get_video_info"
+    pt_BR: "get_video_info"
+description:
+  human:
+    en_US: "Get detailed information about video files, including format, duration, resolution, codecs and more"
+    zh_Hans: "获取有关视频文件的详细信息，包括格式、持续时间、分辨率、编解码器等。"
+    pt_BR: "Obter informações detalhadas sobre arquivos de vídeo, incluindo formato, duração, resolução, codecs e mais"
+  llm: "Get detailed information about video files, including format, duration, resolution, codecs and more."
+parameters:
+  - name: video
+    type: file
+    required: true
+    label:
+      en_US: Video file
+      zh_Hans: 视频文件
+      pt_BR: Arquivo de vídeo
+    human_description:
+      en_US: "Target file, need video file"
+      zh_Hans: "目标文件，需要视频文件"
+      pt_BR: "Arquivo de vídeo, precisa enviar o arquivo de vídeo"
+    llm_description: "Target file, need video file"
+    form: llm
+extra:
+  python:
+    source: tools/get_video_info.py

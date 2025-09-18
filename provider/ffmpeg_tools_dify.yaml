@@ -6,11 +6,11 @@ identity:
     zh_Hans: "ffmpeg_tools_dify"
     pt_BR: "ffmpeg_tools_dify"
   description:
-    en_US: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
-    zh_Hans: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
-    pt_BR: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
+    en_US: FFmpeg tools plugin that provides tools for getting video information, format conversion, keyframe extraction, cutting, compression and audio extraction.
+    ja_JP: FFmpegツールセットプラグイン。動画情報の取得、フォーマット変換、キーフレーム抽出、カット、圧縮、音声抽出のツールを提供します。
+    zh_Hans: FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。
+    pt_BR: Plugin de ferramentas FFmpeg que fornece ferramentas para obter informações de vídeo, conversão de formato, extração de quadros-chave, corte, compressão e extração de áudio.
   icon: "icon.svg"
-
 #########################################################################################
 # If you want to support OAuth, you can uncomment the following code.
 #########################################################################################
@@ -52,9 +52,8 @@ identity:
 #       label:
 #         zh_Hans: "Access Token"
 #         en_US: "Access Token"
-
 tools:
-  - tools/ffmpeg_tools_dify.yaml
+  - tools/get_video_info.yaml
 extra:
   python:
     source: provider/ffmpeg_tools_dify.py
