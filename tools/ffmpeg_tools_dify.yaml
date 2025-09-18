@@ -1,0 +1,30 @@
+identity:
+  name: "ffmpeg_tools_dify"
+  author: "livien"
+  label:
+    en_US: "ffmpeg_tools_dify"
+    zh_Hans: "ffmpeg_tools_dify"
+    pt_BR: "ffmpeg_tools_dify"
+description:
+  human:
+    en_US: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
+    zh_Hans: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
+    pt_BR: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
+  llm: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
+parameters:
+  - name: query
+    type: string
+    required: true
+    label:
+      en_US: Query string
+      zh_Hans: 查询语句
+      pt_BR: Query string
+    human_description:
+      en_US: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
+      zh_Hans: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
+      pt_BR: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
+    llm_description: "FFmpeg工具集插，提供获取视频信息、格式转换、关键帧提取、剪切、压缩和提取音频的工具。"
+    form: llm
+extra:
+  python:
+    source: tools/ffmpeg_tools_dify.py
