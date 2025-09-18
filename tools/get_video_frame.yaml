@@ -1,0 +1,56 @@
+identity:
+  name: "get_video_frame"
+  author: "livien"
+  label:
+    en_US: "get_video_frame"
+    zh_Hans: "get_video_frame"
+    pt_BR: "get_video_frame"
+description:
+  human:
+    en_US: "Get one key frame of video files"
+    zh_Hans: "获取视频文件的一个关键帧"
+    pt_BR: "Obter um quadro-chave de arquivos de vídeo"
+  llm: "Get one key frame of video files"
+parameters:
+  - name: video
+    type: file
+    required: true
+    label:
+      en_US: Video file
+      zh_Hans: 视频文件
+      pt_BR: Arquivo de vídeo
+    human_description:
+      en_US: "Target file, need video file"
+      zh_Hans: "目标文件，需要视频文件"
+      pt_BR: "Arquivo de vídeo, precisa enviar o arquivo de vídeo"
+    llm_description: "Target file, need video file"
+    form: llm
+  - name: type
+    type: string
+    required: true
+    label:
+      en_US: Type
+      zh_Hans: 类型
+      pt_BR: Tipo
+    human_description:
+      en_US: "Type, default is start, options: start, end, time"
+      zh_Hans: "类型，默认是start，选项: start, end, time"
+      pt_BR: "Tipo, padrão é start, opções: start, end, time"
+    llm_description: "Type, default is start, options: start, end, time"
+    form: llm
+  - name: time
+    type: number
+    required: false
+    label:
+      en_US: Time (seconds)
+      zh_Hans: 时间(秒)
+      pt_BR: Tempo(segundos)
+    human_description:
+      en_US: "Time, default is 1"
+      zh_Hans: "时间，默认是1"
+      pt_BR: "Tempo, padrão é 1"
+    llm_description: "Time, default is 1"
+    form: llm
+extra:
+  python:
+    source: tools/get_video_frame.py

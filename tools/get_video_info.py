@@ -1,3 +1,4 @@
+
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 from collections.abc import Generator
@@ -7,60 +8,129 @@ import subprocess
 import json
 import os
 
-class GetVideoInfo(Tool):
-    def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage, None, None]:
-        video_file = tool_parameters.get('video')
+class GetVideoInfo(Tool):    
+    def _create_error_response(self, error_message: str) -> Generator[ToolInvokeMessage, None, None]:
+        yield self.create_text_message(error_message)
+        yield self.create_json_message({
+            "status": "error",
+            "message": error_message
+        })
+    
+    def _extract_stream_info(self, stream_metadata: dict) -> dict:
+        stream_info = {
+            "index": stream_metadata.get("index"),
+            "codec_type": stream_metadata.get("codec_type"),
+            "codec_name": stream_metadata.get("codec_name")
+        }
         
-        if not video_file:
-            yield self.create_text_message("No video file provided")
-            yield self.create_json_message({
-                "status": "error",
-                "message": "No video file provided"
+        # 处理视频流特有信息
+        if stream_metadata.get("codec_type") == "video":
+            stream_info.update({
+                "width": stream_metadata.get("width"),
+                "height": stream_metadata.get("height"),
+                "r_frame_rate": stream_metadata.get("r_frame_rate"),
+                "display_aspect_ratio": stream_metadata.get("display_aspect_ratio", "unknown")
             })
+        
+        # 处理音频流特有信息
+        elif stream_metadata.get("codec_type") == "audio":
+            stream_info.update({
+                "sample_rate": stream_metadata.get("sample_rate"),
+                "channels": stream_metadata.get("channels"),
+                "channel_layout": stream_metadata.get("channel_layout", "unknown")
+            })
+        
+        return stream_info
+    
+    def _generate_summary_text(self, video_info_response: dict, filename: str) -> str:
+        video_streams = [stream for stream in video_info_response["streams"] if stream["codec_type"] == "video"]
+        audio_streams = [stream for stream in video_info_response["streams"] if stream["codec_type"] == "audio"]
+        
+        if not video_streams:
+            return f"No video streams found in {filename}"
+        
+        primary_video_stream = video_streams[0]
+        video_duration_seconds = video_info_response["format"]["duration"]
+        duration_minutes = int(video_duration_seconds // 60)
+        duration_seconds = int(video_duration_seconds % 60)
+        
+        summary_lines = [
+            f"Video Information for {filename}:",
+            "",
+            f"Format: {video_info_response['format']['format_name']}",
+            f"Duration: {duration_minutes}m {duration_seconds}s",
+            f"Size: {video_info_response['format']['size'] / (1024*1024):.2f} MB",
+        ]
+        
+        if "width" in primary_video_stream and "height" in primary_video_stream:
+            summary_lines.append(f"Resolution: {primary_video_stream['width']}x{primary_video_stream['height']}")
+            video_info_response["resolution"]["width"] = max(
+                video_info_response["resolution"]["width"], 
+                primary_video_stream["width"]
+            )
+            video_info_response["resolution"]["height"] = max(
+                video_info_response["resolution"]["height"], 
+                primary_video_stream["height"]
+            )
+        
+        summary_lines.append(f"Video Codec: {primary_video_stream.get('codec_name', 'Unknown')}")
+        
+        if audio_streams:
+            summary_lines.append(f"Audio Codec: {audio_streams[0].get('codec_name', 'Unknown')}")
+        
+        summary_lines.append(f"Bitrate: {video_info_response['format']['bit_rate'] / 1000:.2f} kbps")
+        
+        return "\n".join(summary_lines)
+    
+    def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage, None, None]:
+        uploaded_video_file = tool_parameters.get('video')
+        
+        if not uploaded_video_file:
+            yield from self._create_error_response("No video file provided")
             return
         
         try:
-            # 创建临时文件保存上传的视频
-            file_extension = video_file.extension if video_file.extension else '.mp4'
+            # 创建临时文件
+            video_file_extension = uploaded_video_file.extension if uploaded_video_file.extension else '.mp4'
             
-            with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as temp_file:
-                temp_file.write(video_file.blob)
-                temp_file_path = temp_file.name
+            with tempfile.NamedTemporaryFile(delete=False, suffix=video_file_extension) as temp_video_file:
+                temp_video_file.write(uploaded_video_file.blob)
+                temporary_video_path = temp_video_file.name
             
             try:
-                # 使用ffprobe获取视频信息
-                command = [
+                # 获取视频信息
+                ffprobe_command = [
                     'ffprobe', 
                     '-v', 'quiet',
                     '-print_format', 'json',
                     '-show_format',
                     '-show_streams',
-                    temp_file_path
+                    temporary_video_path
                 ]
                 
-                result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                ffprobe_result = subprocess.run(
+                    ffprobe_command, 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.PIPE, 
+                    text=True
+                )
                 
-                if result.returncode != 0:
-                    error_msg = f"Error analyzing video file: {result.stderr}"
-                    yield self.create_text_message(error_msg)
-                    yield self.create_json_message({
-                        "status": "error",
-                        "message": error_msg
-                    })
+                if ffprobe_result.returncode != 0:
+                    analysis_error_message = f"Error analyzing video file: {ffprobe_result.stderr}"
+                    yield from self._create_error_response(analysis_error_message)
                     return
                 
-                # 解析JSON结果
-                info = json.loads(result.stdout)
+                video_metadata = json.loads(ffprobe_result.stdout)
                 
-                # 提取关键信息
-                formatted_info = {
+                # 提取关键信息并构建结构化响应
+                video_info_response = {
                     "status": "success",
-                    "filename": video_file.filename,
+                    "filename": uploaded_video_file.filename,
                     "format": {
-                        "format_name": info.get("format", {}).get("format_name", "unknown"),
-                        "duration": float(info.get("format", {}).get("duration", 0)),
-                        "size": int(info.get("format", {}).get("size", 0)),
-                        "bit_rate": int(info.get("format", {}).get("bit_rate", 0)),
+                        "format_name": video_metadata.get("format", {}).get("format_name", "unknown"),
+                        "duration": float(video_metadata.get("format", {}).get("duration", 0)),
+                        "size": int(video_metadata.get("format", {}).get("size", 0)),
+                        "bit_rate": int(video_metadata.get("format", {}).get("bit_rate", 0)),
                     },
                     "resolution": {
                         "width": 0,
@@ -70,75 +140,22 @@ class GetVideoInfo(Tool):
                 }
                 
                 # 处理流信息
-                for stream in info.get("streams", []):
-                    stream_info = {
-                        "index": stream.get("index"),
-                        "codec_type": stream.get("codec_type"),
-                        "codec_name": stream.get("codec_name")
-                    }
-                    
-                    # 视频特有信息
-                    if stream.get("codec_type") == "video":
-                        stream_info.update({
-                            "width": stream.get("width"),
-                            "height": stream.get("height"),
-                            "r_frame_rate": stream.get("r_frame_rate"),
-                            "display_aspect_ratio": stream.get("display_aspect_ratio", "unknown")
-                        })
-                    
-                    # 音频特有信息
-                    elif stream.get("codec_type") == "audio":
-                        stream_info.update({
-                            "sample_rate": stream.get("sample_rate"),
-                            "channels": stream.get("channels"),
-                            "channel_layout": stream.get("channel_layout", "unknown")
-                        })
-                    
-                    formatted_info["streams"].append(stream_info)
+                for stream_metadata in video_metadata.get("streams", []):
+                    stream_info = self._extract_stream_info(stream_metadata)
+                    video_info_response["streams"].append(stream_info)
                 
-                # 生成人类可读的摘要
-                video_streams = [s for s in formatted_info["streams"] if s["codec_type"] == "video"]
-                audio_streams = [s for s in formatted_info["streams"] if s["codec_type"] == "audio"]
+                # 生成摘要信息
+                summary_text = self._generate_summary_text(video_info_response, uploaded_video_file.filename)
                 
-                if video_streams:
-                    main_video = video_streams[0]
-                    duration_sec = formatted_info["format"]["duration"]
-                    minutes = int(duration_sec // 60)
-                    seconds = int(duration_sec % 60)
-                    
-                    summary = f"Video Information for {video_file.filename}:\n\n"
-                    summary += f"Format: {formatted_info['format']['format_name']}\n"
-                    summary += f"Duration: {minutes}m {seconds}s\n"
-                    summary += f"Size: {formatted_info['format']['size'] / (1024*1024):.2f} MB\n"
-                    
-                    if "width" in main_video and "height" in main_video:
-                        summary += f"Resolution: {main_video['width']}x{main_video['height']}\n"
-                        formatted_info["resolution"]["width"] = max(formatted_info["resolution"]["width"], main_video["width"])
-                        formatted_info["resolution"]["height"] = max(formatted_info["resolution"]["height"], main_video["height"])
-                    
-                    summary += f"Video Codec: {main_video.get('codec_name', 'Unknown')}\n"
-                    
-                    if audio_streams:
-                        summary += f"Audio Codec: {audio_streams[0].get('codec_name', 'Unknown')}\n"
-                    
-                    summary += f"Bitrate: {formatted_info['format']['bit_rate'] / 1000:.2f} kbps\n"
-                
-                else:
-                    summary = f"No video streams found in {video_file.filename}"
-                
-                # 返回结果
-                yield self.create_text_message(summary)
-                yield self.create_json_message(formatted_info)
+                # 返回处理结果
+                yield self.create_text_message(summary_text)
+                yield self.create_json_message(video_info_response)
                 
             finally:
                 # 清理临时文件
-                if os.path.exists(temp_file_path):
-                    os.unlink(temp_file_path)
+                if os.path.exists(temporary_video_path):
+                    os.unlink(temporary_video_path)
                     
-        except Exception as e:
-            error_msg = f"Error processing video file: {str(e)}"
-            yield self.create_text_message(error_msg)
-            yield self.create_json_message({
-                "status": "error",
-                "message": error_msg
-            }) 
+        except Exception as processing_error:
+            processing_error_message = f"Error processing video file: {str(processing_error)}"
+            yield from self._create_error_response(processing_error_message) 

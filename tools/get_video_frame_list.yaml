@@ -1,0 +1,56 @@
+identity:
+  name: "get_video_frame_list"
+  author: "livien"
+  label:
+    en_US: "get_video_frame_list"
+    zh_Hans: "get_video_frame_list"
+    pt_BR: "get_video_frame_list"
+description:
+  human:
+    en_US: "Get list of key frames of video files"
+    zh_Hans: "获取视频文件的关键帧列表"
+    pt_BR: "Obter lista de quadros-chave de arquivos de vídeo"
+  llm: "Get list of key frames of video files"
+parameters:
+  - name: video
+    type: file
+    required: true
+    label:
+      en_US: Video file
+      zh_Hans: 视频文件
+      pt_BR: Arquivo de vídeo
+    human_description:
+      en_US: "Target file, need video file"
+      zh_Hans: "目标文件，需要视频文件"
+      pt_BR: "Arquivo de vídeo, precisa enviar o arquivo de vídeo"
+    llm_description: "Target file, need video file"
+    form: llm
+  - name: gap_time
+    type: number
+    required: false
+    label:
+      en_US: Gap time
+      zh_Hans: 间隔时间
+      pt_BR: Intervalo de tempo
+    human_description:
+      en_US: "Gap time, default is 1 second"
+      zh_Hans: "间隔时间，默认是1秒"
+      pt_BR: "Intervalo de tempo, padrão é 1 segundo"
+    llm_description: "Gap time, default is 1 second"
+    form: llm
+  - name: count
+    type: number
+    required: false
+    label:
+      en_US: Count
+      zh_Hans: 数量
+      pt_BR: Contagem
+    human_description:
+      en_US: "Count, default is 1"
+      zh_Hans: "数量，默认是1"
+      pt_BR: "Contagem, padrão é 1"
+    llm_description: "Count, default is 1"
+    form: llm
+extra:
+  python:
+    source: tools/get_video_frame_list.py
