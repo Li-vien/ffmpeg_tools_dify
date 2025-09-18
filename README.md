@@ -1,8 +1,8 @@
 ## ffmpeg_tools_dify
 
-**Author:** Li-vien
-**Version:** 0.0.1
-**Type:** tool
+**Author:** livien    
+**Version:** 1.0.1  
+**Type:** tool    
 
 ### Description
 A collection of ffmpeg tools that organizes common functionality
@@ -31,21 +31,21 @@ A collection of ffmpeg tools that organizes common functionality
 
 
 ## Examples
-1. Extract first frame of video
+### 1. Extract first frame of video
 ```
 {
     "video": [uploaded_video_file],
     "type": "start",
 }
 ```
-2. Extract last frame of video
+### 2. Extract last frame of video
 ```
 {
     "video": [uploaded_video_file],
     "type": "end",
 }
 ```
-3. Extract frame at specified time
+### 3. Extract frame at specified time
 ```
 {
     "video": [uploaded_video_file],
@@ -53,26 +53,29 @@ A collection of ffmpeg tools that organizes common functionality
     "time": "12"
 }
 ```
-4. Extract frames at 10-second intervals
+### 4. Extract frames at 10-second intervals
+```
 {
     "video": [uploaded_video_file],
     "gap_time": "10",
 }
 ```
-5. Extract 10 frames
+### 5. Extract 10 frames
+#### input
+```
 {
     "video": [uploaded_video_file],
     "count": "10",
 }
 ```
-6. Get video info
--- input
+### 6. Get video info
+#### input
 ```
 {
     "video": [uploaded_video_file],
 }
 ```
--- output
+#### output
 ```
 {
   "text": "Video Information for video5.mp4:\n\nFormat: mov,mp4,m4a,3gp,3g2,mj2\nDuration: 0m 34s\nSize: 3.79 MB\nResolution: 394x852\nVideo Codec: h264\nAudio Codec: aac\nBitrate: 934.82 kbps\n",
