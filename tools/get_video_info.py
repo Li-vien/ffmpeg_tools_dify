@@ -101,7 +101,7 @@ class GetVideoInfo(Tool):
                 # 获取视频信息
                 ffprobe_command = [
                     'ffprobe', 
-                    '-v', 'quiet',
+                    '-v', 'error',  # 改为 error 级别，显示错误信息
                     '-print_format', 'json',
                     '-show_format',
                     '-show_streams',
@@ -120,7 +120,18 @@ class GetVideoInfo(Tool):
                     yield from self._create_error_response(analysis_error_message)
                     return
                 
-                video_metadata = json.loads(ffprobe_result.stdout)
+                # 验证 ffprobe 输出是否为有效 JSON
+                if not ffprobe_result.stdout.strip():
+                    analysis_error_message = "ffprobe returned empty output"
+                    yield from self._create_error_response(analysis_error_message)
+                    return
+                
+                try:
+                    video_metadata = json.loads(ffprobe_result.stdout)
+                except json.JSONDecodeError as json_error:  
+                    analysis_error_message = f"Failed to parse ffprobe output as JSON: {debug_info}"
+                    yield from self._create_error_response(analysis_error_message)
+                    return
                 
                 # 提取关键信息并构建结构化响应
                 video_info_response = {
