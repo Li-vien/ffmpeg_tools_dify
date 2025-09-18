@@ -1,6 +1,6 @@
 identity:
   name: "get_video_frame"
-  author: "livien"
+  author: "Li-vien"
   label:
     en_US: "get_video_frame"
     zh_Hans: "get_video_frame"

@@ -1,6 +1,6 @@
 version: 1.0.0
 type: plugin
-author: livien
+author: Li-vien
 name: ffmpeg_tools_dify
 label:
   en_US: ffmpeg_tools_dify
