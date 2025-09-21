@@ -15,6 +15,7 @@ tools:
   - tools/get_video_info.yaml
   - tools/get_video_frame.yaml
   - tools/get_video_frame_list.yaml
+  - tools/base64_to_image.yaml
 extra:
   python:
     source: provider/ffmpeg_tools_dify.py

@@ -25,6 +25,7 @@ resource:
 plugins:
   tools:
     - provider/ffmpeg_tools_dify.yaml
+    - provider/iloveimg_tools_dify.yaml
 meta:
   version: 1.0.0
   arch:

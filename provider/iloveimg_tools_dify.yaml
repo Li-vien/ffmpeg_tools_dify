@@ -1,0 +1,18 @@
+identity:
+  author: "livien"
+  name: "iloveimg_tools_dify"
+  label:
+    en_US: "iloveimg_tools_dify"
+    zh_Hans: "iloveimg_tools_dify"
+    pt_BR: "iloveimg_tools_dify"
+  description:
+    en_US: iloveimg tools plugin that provides tools for removing background, etc.
+    ja_JP: iloveimgツールセットプラグイン。動画情報の取得、キーフレーム抽出のツールを提供します。
+    zh_Hans: iloveimg工具集插，提供图片移除背景等工具。
+    pt_BR: Plugin de ferramentas iloveimg que fornece ferramentas para remover fundo, etc.
+  icon: "icon.svg"
+tools:
+  - tools/remove_background.yaml
+extra:
+  python:
+    source: provider/iloveimg_tools_dify.py
