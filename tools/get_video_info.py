@@ -68,14 +68,8 @@ class GetVideoInfo(Tool):
                 
                 try:
                     video_metadata = json.loads(ffprobe_result.stdout)
-                except json.JSONDecodeError as json_error:
-                    # 提供详细的调试信息
-                    debug_info = f"JSON解析错误: {str(json_error)}\n"
-                    debug_info += f"ffprobe返回码: {ffprobe_result.returncode}\n"
-                    debug_info += f"标准输出前500字符: {ffprobe_result.stdout[:500]}\n"
-                    debug_info += f"标准错误: {ffprobe_result.stderr[:500]}"
-                    
-                    analysis_error_message = f"Failed to parse ffprobe output as JSON: {debug_info}"
+                except json.JSONDecodeError:
+                    analysis_error_message = f"Failed to parse ffprobe output as JSON"
                     yield self.create_text_message(analysis_error_message)
                     yield self.create_json_message({
                         "status": "error",

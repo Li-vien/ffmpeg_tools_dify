@@ -1,0 +1,30 @@
+identity:
+  name: "base64_to_image"
+  author: "livien"
+  label:
+    en_US: "base64_to_image"
+    zh_Hans: "base64_to_image"
+    pt_BR: "base64_to_image"
+description:
+  human:
+    en_US: "Convert base64 image to image"
+    zh_Hans: "将base64图片转换为图片"
+    pt_BR: "Converter imagem base64 para imagem"
+  llm: "Convert base64 image to image."
+parameters:
+  - name: base64Image
+    type: string
+    required: true
+    label:
+      en_US: Base64 image
+      zh_Hans: base64图片
+      pt_BR: Imagem base64
+    human_description:
+      en_US: "Target file, need base64 image"
+      zh_Hans: "目标文件，需要base64图片"
+      pt_BR: "Arquivo de base64, precisa enviar o arquivo de base64"
+    llm_description: "Target file, need base64 image"
+    form: llm
+extra:
+  python:
+    source: tools/base64_to_image.py
