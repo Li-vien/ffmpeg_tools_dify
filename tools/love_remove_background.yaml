@@ -1,0 +1,30 @@
+identity:
+  name: "love_remove_background"
+  author: "livien"
+  label:
+    en_US: "love_remove_background"
+    zh_Hans: "love_remove_background"
+    pt_BR: "love_remove_background"
+description:
+  human:
+    en_US: "Remove background of image"
+    zh_Hans: "移除图片背景"
+    pt_BR: "Remover fundo da imagem"
+  llm: "Remove background of image."
+parameters:
+  - name: image
+    type: file
+    required: true
+    label:
+      en_US: Image file
+      zh_Hans: 图片文件
+      pt_BR: Arquivo de imagem
+    human_description:
+      en_US: "Target file, need to remove background of image"
+      zh_Hans: "目标文件，需要移除背景的图片"
+      pt_BR: "Arquivo de imagem, precisa enviar o arquivo de imagem para remover o fundo"
+    llm_description: "Target file, need to remove background of image"
+    form: llm
+extra:
+  python:
+    source: tools/love_remove_background.py

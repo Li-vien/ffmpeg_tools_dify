@@ -11,8 +11,22 @@ identity:
     zh_Hans: iloveimg工具集插，提供图片移除背景等工具。
     pt_BR: Plugin de ferramentas iloveimg que fornece ferramentas para remover fundo, etc.
   icon: "icon.svg"
+credentials_for_provider: 
+  love_public_key:
+    type: secret-input
+    required: true
+    label:
+      en_US: iLoveImg Public Key
+      zh_Hans: iLoveImg Public Key
+    placeholder:
+      en_US: Please input your iLoveImg Public Key
+      zh_Hans: 请输入你的 iLoveImg Public Key
+    help:
+      en_US: Get your iLoveImg Public Key from iLoveImg
+      zh_Hans: 从 iLoveImg 获取您的 iLoveImg Public Key
+    url: https://www.iloveapi.com/user/projects
 tools:
-  - tools/remove_background.yaml
+  - tools/love_remove_background.yaml
 extra:
   python:
     source: provider/iloveimg_tools_dify.py
